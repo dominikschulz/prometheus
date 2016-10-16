@@ -425,6 +425,8 @@ type ScrapeConfig struct {
 	ProxyURL URL `yaml:"proxy_url,omitempty"`
 	// TLSConfig to use to connect to the targets.
 	TLSConfig TLSConfig `yaml:"tls_config,omitempty"`
+	// LocalAddr sets the local IP addrress for the scapers.
+	LocalAddr string `yaml:"local_addr,omitempty"`
 
 	// List of labeled target groups for this job.
 	StaticConfigs []*TargetGroup `yaml:"static_configs,omitempty"`

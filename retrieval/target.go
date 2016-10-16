@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"hash/fnv"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -75,7 +76,14 @@ func NewHTTPClient(cfg *config.ScrapeConfig) (*http.Client, error) {
 	// The only timeout we care about is the configured scrape timeout.
 	// It is applied on request. So we leave out any timings here.
 	var rt http.RoundTripper = &http.Transport{
-		Proxy:             http.ProxyURL(cfg.ProxyURL.URL),
+		Proxy: http.ProxyURL(cfg.ProxyURL.URL),
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+			LocalAddr: &net.TCPAddr{
+				IP: net.ParseIP(cfg.LocalAddr),
+			},
+		}).DialContext,
 		DisableKeepAlives: true,
 		TLSClientConfig:   tlsConfig,
 	}
